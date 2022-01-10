@@ -1,0 +1,10 @@
+server:
+  host: "localhost"
+  port: 3088
+
+database:
+  dbname: 
+  dbuser: "dbuser"
+  dbpassword: "dbpassword"
+
+SERVER_NAME: "CHI"  

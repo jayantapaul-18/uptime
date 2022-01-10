@@ -1,0 +1,30 @@
+GET http://localhost:3088
+###
+GET http://localhost:3088/ping
+###
+GET http://localhost:3088/app/v1/admin
+###
+GET http://localhost:3088/app/v1/healthz
+###
+
+GET http://localhost:3088/app/v1/healthcheck
+###
+
+POST http://localhost:3088/app/v1/signup
+content-type: application/json
+
+{
+"Id" : "5",
+"Title" : "Electronics",
+"Content" : "Technical",
+"Summary" : "How to make circuit"
+}
+
+###
+POST http://localhost:3088/app/v1/create-profile
+content-type: application/json
+
+{
+"name" : "Jay",
+"city" : "Bellevue"
+}
