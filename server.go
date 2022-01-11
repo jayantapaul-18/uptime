@@ -143,6 +143,8 @@ func main() {
 
 	r.Post("/app/v1/signup", mysqldb.CreateNewArticle)
 
+	r.Post("/app/v1/login", mysqldb.Login)
+
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("up"))
 	})
@@ -169,7 +171,7 @@ func main() {
 	r.Get("/app/v1/healthcheck", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		client := http.Client{Timeout: 5 * time.Second}
-		resp, err := client.Get("https://plab.account.t-mobile.com")
+		resp, err := client.Get("http://localhost:3088/app/v1/healthz")
 		// err = errors.New("New Error !")
 		if err != nil {
 			helpers.ServerError(w, err)
@@ -182,6 +184,8 @@ func main() {
 	r.Get("/home", routers.Home)
 	r.Get("/index", routers.Index)
 	r.Get("/admin", routers.Admin)
+	r.Get("/alpine", routers.Alpine)
+	r.Get("/profile", routers.Profile)
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(404)

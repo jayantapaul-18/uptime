@@ -28,3 +28,10 @@ content-type: application/json
 "name" : "Jay",
 "city" : "Bellevue"
 }
+###
+
+POST http://localhost:3088/app/v1/login
+Content-Type: application/x-www-form-urlencoded
+
+username=Jay
+&password=pass12

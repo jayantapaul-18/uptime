@@ -31,6 +31,13 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, "index.page.html")
 }
 
+func Alpine(w http.ResponseWriter, r *http.Request) {
+	renderTemplate(w, "alpine.page.html")
+}
+func Profile(w http.ResponseWriter, r *http.Request) {
+	renderTemplate(w, "profile.page.html")
+}
+
 func Admin(w http.ResponseWriter, r *http.Request) {
 	parseTemplate, _ := template.ParseFiles("./templates/admin.page.html")
 	data := TodoPageData{

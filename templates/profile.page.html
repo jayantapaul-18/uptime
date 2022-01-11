@@ -13,7 +13,7 @@
       crossorigin="anonymous"
     />
 
-    <title>Home</title>
+    <title>Profile</title>
   </head>
 
   <body>
@@ -23,12 +23,7 @@
       crossorigin="anonymous"
     ></script>
 
-    <h1>Information</h1>
-    <body>
-      <form action="/app/v1/login" method="post">
-          Username:<input type="text" name="username">
-          Password:<input type="password" name="password">
-          <input type="submit" value="Login">
-      </form>
+    <h1>Profile</h1>
+    <h1>{{.UserName}}</h1>
   </body>
 </html>

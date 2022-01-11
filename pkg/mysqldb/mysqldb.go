@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"io"
 	"io/ioutil"
 	"log"
@@ -147,6 +148,29 @@ func CreateNewArticle(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(201)
 	w.Write(newData)
 
+}
+
+type Profile struct {
+	UserName  []string
+	OtherInfo string
+}
+
+func Login(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("method:", r.Method)
+	if r.Method == "GET" {
+		t, _ := template.ParseFiles("home.page.html")
+		t.Execute(w, nil)
+	} else {
+		r.ParseForm()
+		fmt.Println("username:", r.Form["username"])
+		fmt.Println("password:", r.Form["password"])
+		data := Profile{
+			UserName:  r.Form["username"],
+			OtherInfo: "Some information",
+		}
+		index, _ := template.ParseFiles("./templates/profile.page.html")
+		index.Execute(w, data)
+	}
 }
 
 func Loginmw(handler http.Handler) http.Handler {
