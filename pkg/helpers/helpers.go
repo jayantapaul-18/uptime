@@ -2,15 +2,15 @@ package helpers
 
 import (
 	"fmt"
-	"jayantapaul-18/uptime/pkg/config"
+	"jayantapaul-18/uptime/pkg/localconfig"
 	"net/http"
 	"runtime/debug"
 )
 
-var app *config.AppConfig
+var app *localconfig.AppConfig
 
 // Sets up config for helpers
-func NewHelpers(a *config.AppConfig) {
+func NewHelpers(a *localconfig.AppConfig) {
 	app = a
 }
 

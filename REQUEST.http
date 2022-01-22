@@ -9,7 +9,8 @@ GET http://localhost:3088/app/v1/healthz
 
 GET http://localhost:3088/app/v1/healthcheck
 ###
-
+GET http://localhost:3088/app/v1/dnscheck
+###
 POST http://localhost:3088/app/v1/signup
 content-type: application/json
 

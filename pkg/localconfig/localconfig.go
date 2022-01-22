@@ -1,22 +1,20 @@
-package config
+package localconfig
 
 import (
 	"log"
 )
 
 // Configurations exported
-type  AppConfig struct {
-    InfoLog *log.Logger
-	ErrorLog *log.Logger
+type AppConfig struct {
+	InfoLog      *log.Logger
+	ErrorLog     *log.Logger
 	InProduction bool
-	IsSecure bool
-
+	IsSecure     bool
 }
 
-
 type Configurations struct {
-	Server       ServerConfigurations
-	Database     DatabaseConfigurations
+	Server      ServerConfigurations
+	Database    DatabaseConfigurations
 	SERVER_NAME string
 }
 

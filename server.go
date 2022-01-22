@@ -1,12 +1,15 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"flag"
 	"fmt"
-	"jayantapaul-18/uptime/pkg/config"
 	"jayantapaul-18/uptime/pkg/custommiddleware"
+	"jayantapaul-18/uptime/pkg/dnsrun"
+	"jayantapaul-18/uptime/pkg/heartbeat"
 	"jayantapaul-18/uptime/pkg/helpers"
+	"jayantapaul-18/uptime/pkg/localconfig"
 	"jayantapaul-18/uptime/pkg/mypackage"
 	"jayantapaul-18/uptime/pkg/mysqldb"
 	"jayantapaul-18/uptime/pkg/routers"
@@ -21,6 +24,8 @@ import (
 	"github.com/fatih/color"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/gookit/config"
+	"github.com/gookit/config/yaml"
 	// _ "github.com/go-sql-driver/mysql"
 	// "path/filepath"
 	// c "./config"
@@ -28,7 +33,7 @@ import (
 
 const portNumber = ":3088"
 
-var app config.AppConfig
+var app localconfig.AppConfig
 var infoLog *log.Logger
 var errorLog *log.Logger
 
@@ -56,6 +61,25 @@ func init() {
 	red := color.New(color.FgRed).PrintfFunc()
 	red("Red Error logs ")
 	c.Println("Ending initilazation...")
+	// Load Config file
+	config.WithOptions(config.ParseEnv)
+	// add driver for support yaml content
+	config.AddDriver(yaml.Driver)
+	err := config.LoadFiles("envconfig.yml")
+	if err != nil {
+		panic(err)
+	}
+	// load more files
+	err = config.LoadFiles("envconfig.yml")
+	// can also load multi at once
+	// err := config.LoadFiles("envconfig.yml", "testdata/data.yml")
+	if err != nil {
+		panic(err)
+	}
+
+	//fmt.Printf("config data: \n %#v\n", config.Data())
+	// DNS_URL_CHECK, _ := config.String("DNS_URL_CHECK")
+	// fmt.Print(DNS_URL_CHECK)
 }
 
 func main() {
@@ -111,30 +135,45 @@ func main() {
 	r.Mount("/app/x/debug", middleware.Profiler())
 
 	mypackage.Hello() // custom package
+	// Heartbeat
+	ctx, stop := context.WithCancel(context.Background())
+	go func() {
+		fmt.Scanln()
+		stop()
+	}()
+	go heartbeat.Heartbeat(ctx)
+
+	// DBS Check
+	dnsctx, dstop := context.WithCancel(context.Background())
+	go func() {
+		fmt.Scanln()
+		dstop()
+	}()
+	go dnsrun.DNSCheck(dnsctx)
 	// DNS Check
 	//dnsrun.DnsCheck()
 	// DB Connection
-	db := mysqldb.DBConn()
-	selDB, err := db.Query("SELECT * FROM Employee ORDER BY id DESC")
-	if err != nil {
-		panic(err.Error())
-	}
-	emp := Employee{}
-	res := []Employee{}
-	for selDB.Next() {
-		var id int
-		var name, city string
-		err = selDB.Scan(&id, &name, &city)
-		if err != nil {
-			panic(err.Error())
-		}
-		emp.Id = id
-		emp.Name = name
-		emp.City = city
-		res = append(res, emp)
-	}
-	defer db.Close()
-	log.Println(res)
+	// db := mysqldb.DBConn()
+	// selDB, err := db.Query("SELECT * FROM Employee ORDER BY id DESC")
+	// if err != nil {
+	// 	panic(err.Error())
+	// }
+	// emp := Employee{}
+	// res := []Employee{}
+	// for selDB.Next() {
+	// 	var id int
+	// 	var name, city string
+	// 	err = selDB.Scan(&id, &name, &city)
+	// 	if err != nil {
+	// 		panic(err.Error())
+	// 	}
+	// 	emp.Id = id
+	// 	emp.Name = name
+	// 	emp.City = city
+	// 	res = append(res, emp)
+	// }
+	// defer db.Close()
+	// log.Println(res)
 
 	r.Post("/app/v1/create-profile", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(201)
@@ -144,6 +183,8 @@ func main() {
 	r.Post("/app/v1/signup", mysqldb.CreateNewArticle)
 
 	r.Post("/app/v1/login", mysqldb.Login)
+
+	r.Get("/app/v1/dnscheck", routers.DCheck)
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("up"))

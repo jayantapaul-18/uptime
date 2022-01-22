@@ -1,12 +1,39 @@
 package dnsrun
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net"
 	"net/http"
 	"time"
+
+	"github.com/gookit/config"
 )
+
+func DNSCheck(ctx context.Context) {
+	tick := time.Tick(30 * time.Second)
+	DNS_URL_CHECK1, _ := config.String("DNS_URL_CHECK1")
+	DNS_URL_CHECK2, _ := config.String("DNS_URL_CHECK2")
+	linkschecks := []string{
+		DNS_URL_CHECK1,
+		DNS_URL_CHECK2,
+	}
+
+	c := make(chan string)
+
+	for {
+		select {
+		case <-tick:
+		case <-ctx.Done():
+			return
+		}
+		fmt.Println("DNS Check ...")
+		for _, linkscheck := range linkschecks {
+			go CheckCname(linkscheck, c)
+		}
+	}
+}
 
 func DnsCheck() {
 	// Cncurrent

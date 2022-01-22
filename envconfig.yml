@@ -1,0 +1,14 @@
+server:
+  host: "localhost"
+  port: 3088
+
+database:
+  dbname: 
+  dbuser: "dbuser"
+  dbpassword: "dbpassword"
+
+SERVER_NAME: "CHI"  
+
+DNS_URL_CHECK: "www.google.com"
+DNS_URL_CHECK1: "twitter.com"
+DNS_URL_CHECK2: "amazon.com"
