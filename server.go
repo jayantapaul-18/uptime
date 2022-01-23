@@ -13,6 +13,7 @@ import (
 	"jayantapaul-18/uptime/pkg/mypackage"
 	"jayantapaul-18/uptime/pkg/mysqldb"
 	"jayantapaul-18/uptime/pkg/routers"
+	lr "jayantapaul-18/uptime/util/logger"
 	"math/rand"
 	"net/http"
 	"os"
@@ -21,15 +22,12 @@ import (
 
 	"github.com/rs/zerolog/log"
 
-	"github.com/rs/zerolog"
-
 	"github.com/asaskevich/govalidator"
 	"github.com/fatih/color"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/gookit/config"
 	"github.com/gookit/config/yaml"
-	"go.uber.org/zap"
 	// _ "github.com/go-sql-driver/mysql"
 	// "path/filepath"
 	// c "./config"
@@ -70,11 +68,13 @@ func init() {
 	config.WithOptions(config.ParseEnv)
 	// add driver for support yaml content
 	config.AddDriver(yaml.Driver)
+
 	err := config.LoadFiles("envconfig.yml")
 	if err != nil {
 		panic(err)
 	}
 	// load more files
+
 	err = config.LoadFiles("envconfig.yml")
 	// can also load multi at once
 	// err := config.LoadFiles("envconfig.yml", "testdata/data.yml")
@@ -88,25 +88,19 @@ func init() {
 }
 
 func main() {
-	//log.Println("Go Server starting ... Time: ", time.Now())
-	fmt.Println("OS:", os.Getenv("GOPATH"))
-	gopath := os.Getenv("GOPATH")
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
-	zerolog.TimestampFieldName = "time"
-	zerolog.LevelFieldName = "level"
-	zerolog.MessageFieldName = "msg"
-	//log.Logger = log.With().Caller().Logger()
-	debug := flag.Bool("debug", true, "sets log level to debug")
-	flag.Parse()
-	// Default level for this example is info, unless debug flag is present
-	zerolog.SetGlobalLevel(zerolog.InfoLevel)
-	if *debug {
-		zerolog.SetGlobalLevel(zerolog.DebugLevel)
-	}
+	logLevel, _ := config.Bool("logLevel")
+	logger := lr.New(logLevel) // Create New logger
+	logger.Info().Msgf("Starting server http://localhost:3088")
 
-	log.Debug().Str("server", "GO-CHI").Float64("version", 0.1).Msg("GO is everywhere")
-	log.Info().Msg("Go Server starting ... ")
-	fmt.Println("GOPATH: " + gopath)
+	// debug, _ := config.Bool("DEBUG")
+	// console := lr.NewConsole(debug)
+	// console.Info().Msg("Console log using logger")
+
+	fmt.Println("\nGOPATH:", os.Getenv("GOPATH"))
+
+	logger.Debug().Str("server", "GO-CHI").Float64("version", 0.1).Msg("GO is everywhere")
+	logger.Info().Msg("Go Server starting ... ")
+
 	microlevel := map[string]int{
 		"LOW":    0,
 		"MEDIUM": 5,
@@ -132,16 +126,6 @@ func main() {
 	// app.InfoLog = infoLog
 	// errorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 	// app.ErrorLog = errorLog
-	// using zap pkg for logger
-	logger, _ := zap.NewProduction()
-	defer logger.Sync()
-	logger.Info("Server starting",
-		// Structured context as strongly typed Field values.
-		zap.String("server", "CHI"),
-		zap.Int("ID", 1),
-		zap.Duration("backoff", time.Second),
-	)
-
 	helpers.NewHelpers(&app)
 	// CHI - Server // https://go-chi.io/
 	r := chi.NewRouter()
@@ -224,6 +208,8 @@ func main() {
 	// r.Get("/app/v1/db-search", mysqldb.DBSearch)
 
 	r.Get("/app/v1/healthz", func(w http.ResponseWriter, r *http.Request) {
+
+		logger.Debug().Str("method", r.Method).Str("url", r.URL.String())
 		resp := healthzResponse{
 			OK:      true,
 			Message: "Healthy",
@@ -244,7 +230,7 @@ func main() {
 	r.Get("/app/v1/healthcheck", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		client := http.Client{Timeout: 5 * time.Second}
-		resp, err := client.Get("http://localhost:3088/app/v1/healthz")
+		resp, err := client.Get("http://localhost:30889/app/v1/healthz")
 		if err != nil {
 			log.Error().Err(err).Msg("error when calling /app/v1/healthz")
 			helpers.ServerError(w, err)

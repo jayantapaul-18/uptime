@@ -2,6 +2,10 @@ server:
   host: "localhost"
   port: 3088
 
+DEBUG: true
+
+logLevel: true
+
 database:
   dbname: 
   dbuser: "dbuser"

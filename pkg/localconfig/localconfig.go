@@ -10,6 +10,7 @@ type AppConfig struct {
 	ErrorLog     *log.Logger
 	InProduction bool
 	IsSecure     bool
+	Debug        bool `yml:"DEBUG,required"`
 }
 
 type Configurations struct {
