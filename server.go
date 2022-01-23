@@ -13,12 +13,15 @@ import (
 	"jayantapaul-18/uptime/pkg/mypackage"
 	"jayantapaul-18/uptime/pkg/mysqldb"
 	"jayantapaul-18/uptime/pkg/routers"
-	"log"
 	"math/rand"
 	"net/http"
 	"os"
 	"runtime"
 	"time"
+
+	"github.com/rs/zerolog/log"
+
+	"github.com/rs/zerolog"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/fatih/color"
@@ -26,6 +29,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/gookit/config"
 	"github.com/gookit/config/yaml"
+	"go.uber.org/zap"
 	// _ "github.com/go-sql-driver/mysql"
 	// "path/filepath"
 	// c "./config"
@@ -34,8 +38,9 @@ import (
 const portNumber = ":3088"
 
 var app localconfig.AppConfig
-var infoLog *log.Logger
-var errorLog *log.Logger
+
+// var infoLog *log.Logger
+// var errorLog *log.Logger
 
 type healthzResponse struct {
 	OK      bool   `json:"ok"`
@@ -83,9 +88,25 @@ func init() {
 }
 
 func main() {
+	//log.Println("Go Server starting ... Time: ", time.Now())
+	fmt.Println("OS:", os.Getenv("GOPATH"))
+	gopath := os.Getenv("GOPATH")
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	zerolog.TimestampFieldName = "time"
+	zerolog.LevelFieldName = "level"
+	zerolog.MessageFieldName = "msg"
+	//log.Logger = log.With().Caller().Logger()
+	debug := flag.Bool("debug", true, "sets log level to debug")
+	flag.Parse()
+	// Default level for this example is info, unless debug flag is present
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	if *debug {
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	}
 
-	log.Println("Go Server starting ... Time: ", time.Now())
-	log.Println("OS:", os.Getenv("GOPATH"))
+	log.Debug().Str("server", "GO-CHI").Float64("version", 0.1).Msg("GO is everywhere")
+	log.Info().Msg("Go Server starting ... ")
+	fmt.Println("GOPATH: " + gopath)
 	microlevel := map[string]int{
 		"LOW":    0,
 		"MEDIUM": 5,
@@ -100,17 +121,27 @@ func main() {
 	// Production mode Config flag
 	inProduction := flag.Bool("production", true, "Application is in production mode")
 	app.InProduction = *inProduction
-	log.Println("InProduction: ", app.InProduction)
+	//log.Println("InProduction: ", app.InProduction)
 	flag.Parse()
 	if !*inProduction || *inProduction == false {
 		fmt.Println("Missing InProduction configuration or sets to false")
 		os.Exit(1)
 	}
+	// Need to work for improvement
+	// infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
+	// app.InfoLog = infoLog
+	// errorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
+	// app.ErrorLog = errorLog
+	// using zap pkg for logger
+	logger, _ := zap.NewProduction()
+	defer logger.Sync()
+	logger.Info("Server starting",
+		// Structured context as strongly typed Field values.
+		zap.String("server", "CHI"),
+		zap.Int("ID", 1),
+		zap.Duration("backoff", time.Second),
+	)
 
-	infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
-	app.InfoLog = infoLog
-	errorLog = log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
-	app.ErrorLog = errorLog
 	helpers.NewHelpers(&app)
 	// CHI - Server // https://go-chi.io/
 	r := chi.NewRouter()
@@ -200,10 +231,11 @@ func main() {
 
 		out, err := json.MarshalIndent(resp, "", "      ")
 		if err != nil {
-			log.Println("JSON MarshalIndent error:", err)
+			log.Error().Err(err).Msg("JSON MarshalIndent error")
+			//log.Println("JSON MarshalIndent error:", err)
 		}
 		if govalidator.IsJSON(string(out)) == true {
-			log.Println("Valid JSON")
+			//log.Println("Valid JSON")
 		}
 
 		w.Header().Set("Content-Type", "application/json")
@@ -213,8 +245,8 @@ func main() {
 		w.Header().Set("Content-Type", "application/json")
 		client := http.Client{Timeout: 5 * time.Second}
 		resp, err := client.Get("http://localhost:3088/app/v1/healthz")
-		// err = errors.New("New Error !")
 		if err != nil {
+			log.Error().Err(err).Msg("error when calling /app/v1/healthz")
 			helpers.ServerError(w, err)
 			return
 		}
@@ -240,10 +272,11 @@ func main() {
 	color.Magenta("Server Continue Running ...")
 	color.Cyan("##  Server  http://localhost:3088/ping ##")
 	addr := getServiceAddress()
-	log.Printf("Server running on http://%s", addr)
+	log.Debug().Str("Server-address", addr)
 	// http.ListenAndServe(portNumber, r)
 	if err := http.ListenAndServe(portNumber, r); err != nil {
-		log.Fatal("ListenAndServe: ", err)
+		//log.Fatal("ListenAndServe: ", err)
+		log.Error().Err(err).Msg("ListenAndServe")
 	}
 }
 

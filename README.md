@@ -1,4 +1,3 @@
-
 nodemon --exec go run server.go --signal SIGTERM
 go mod tidy
 
