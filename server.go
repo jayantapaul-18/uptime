@@ -230,7 +230,7 @@ func main() {
 	r.Get("/app/v1/healthcheck", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		client := http.Client{Timeout: 5 * time.Second}
-		resp, err := client.Get("http://localhost:30889/app/v1/healthz")
+		resp, err := client.Get("http://localhost:3088/app/v1/healthz")
 		if err != nil {
 			log.Error().Err(err).Msg("error when calling /app/v1/healthz")
 			helpers.ServerError(w, err)
