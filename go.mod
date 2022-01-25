@@ -15,6 +15,7 @@ require (
 )
 
 require (
+	github.com/go-chi/cors v1.2.0 // indirect
 	github.com/gookit/config v1.1.0 // indirect
 	github.com/gookit/goutil v0.3.15 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
