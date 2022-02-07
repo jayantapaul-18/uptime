@@ -14,6 +14,13 @@ http://localhost:3088/app/v1/healthz
 
 go mod tidy
 
+**Unit Testing**
+go test ./... -v -cover -coverprofile=coverage.out
+
+go tool cover -html=coverage.out
+
+go test pkg/environmentvar/environmentvar.go pkg/environmentvar/environmentvar_test.go -v
+
 **Docker Command**
 
 This will “tag” the image uptime-server and build it. After it is built, we can run the image as a container.

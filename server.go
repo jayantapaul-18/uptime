@@ -127,6 +127,7 @@ func main() {
 	load.Loadrun("agentApi", "http://192.168.1.175:1881", "GET")
 	environmentvar.SetEnv()
 	environmentvar.GetEnv()
+	environmentvar.GetAllEnv()
 	// Need to work for improvement
 	// infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	// app.InfoLog = infoLog
@@ -216,6 +217,8 @@ func main() {
 	r.Post("/app/v1/login", mysqldb.Login)
 
 	r.Get("/app/v1/dnscheck", routers.DCheck)
+
+	r.Post("/app/v1/set-env", environmentvar.CreateNewEnv)
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("up"))

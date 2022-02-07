@@ -20,7 +20,14 @@ content-type: application/json
 "Content" : "Technical",
 "Summary" : "How to make circuit"
 }
+###
+POST http://localhost:3088/app/v1/set-env
+content-type: application/json
 
+{
+"envName" : "ENV_NAME_GO_TEST",
+"envValue" : "workingusingGO"
+}
 ###
 POST http://localhost:3088/app/v1/create-profile
 content-type: application/json
