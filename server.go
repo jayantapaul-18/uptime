@@ -7,8 +7,10 @@ import (
 	"fmt"
 	"jayantapaul-18/uptime/pkg/custommiddleware"
 	"jayantapaul-18/uptime/pkg/dnsrun"
+	"jayantapaul-18/uptime/pkg/environmentvar"
 	"jayantapaul-18/uptime/pkg/heartbeat"
 	"jayantapaul-18/uptime/pkg/helpers"
+	"jayantapaul-18/uptime/pkg/load"
 	"jayantapaul-18/uptime/pkg/localconfig"
 	"jayantapaul-18/uptime/pkg/mypackage"
 	"jayantapaul-18/uptime/pkg/mysqldb"
@@ -20,8 +22,6 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/rs/zerolog/log"
-
 	"github.com/asaskevich/govalidator"
 	"github.com/fatih/color"
 	"github.com/go-chi/chi/v5"
@@ -29,6 +29,7 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/gookit/config"
 	"github.com/gookit/config/yaml"
+	"github.com/rs/zerolog/log"
 	// _ "github.com/go-sql-driver/mysql"
 	// "path/filepath"
 	// c "./config"
@@ -122,6 +123,10 @@ func main() {
 		fmt.Println("Missing InProduction configuration or sets to false")
 		os.Exit(1)
 	}
+
+	load.Loadrun("agentApi", "http://192.168.1.175:1881", "GET")
+	environmentvar.SetEnv()
+	environmentvar.GetEnv()
 	// Need to work for improvement
 	// infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	// app.InfoLog = infoLog
