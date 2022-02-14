@@ -5,6 +5,7 @@ server:
 DEBUG: true
 
 logLevel: true
+MultiLevelWriter: true
 
 database:
   dbname: 

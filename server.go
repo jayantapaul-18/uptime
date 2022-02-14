@@ -6,7 +6,6 @@ import (
 	"flag"
 	"fmt"
 	"jayantapaul-18/uptime/pkg/custommiddleware"
-	"jayantapaul-18/uptime/pkg/dnsrun"
 	"jayantapaul-18/uptime/pkg/environmentvar"
 	"jayantapaul-18/uptime/pkg/heartbeat"
 	"jayantapaul-18/uptime/pkg/helpers"
@@ -15,12 +14,13 @@ import (
 	"jayantapaul-18/uptime/pkg/mypackage"
 	"jayantapaul-18/uptime/pkg/mysqldb"
 	"jayantapaul-18/uptime/pkg/routers"
-	lr "jayantapaul-18/uptime/util/logger"
 	"math/rand"
 	"net/http"
 	"os"
 	"runtime"
 	"time"
+
+	lr "jayantapaul-18/uptime/util/logger"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/fatih/color"
@@ -29,6 +29,8 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/gookit/config"
 	"github.com/gookit/config/yaml"
+
+	// "github.com/micro/go-micro/v2/logger"
 	"github.com/rs/zerolog/log"
 	// _ "github.com/go-sql-driver/mysql"
 	// "path/filepath"
@@ -90,8 +92,8 @@ func init() {
 }
 
 func main() {
-	logLevel, _ := config.Bool("logLevel")
-	logger := lr.New(logLevel) // Create New logger
+	// logLevel, _ := config.Bool("logLevel")
+	logger := lr.New() // Create New logger
 	logger.Info().Msgf("Starting server http://localhost:3088")
 
 	// debug, _ := config.Bool("DEBUG")
@@ -127,7 +129,7 @@ func main() {
 	load.Loadrun("agentApi", "http://192.168.1.175:1881", "GET")
 	environmentvar.SetEnv()
 	environmentvar.GetEnv()
-	environmentvar.GetAllEnv()
+
 	// Need to work for improvement
 	// infoLog = log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	// app.InfoLog = infoLog
@@ -176,12 +178,13 @@ func main() {
 	go heartbeat.Heartbeat(ctx)
 
 	// DBS Check
-	dnsctx, dstop := context.WithCancel(context.Background())
-	go func() {
-		fmt.Scanln()
-		dstop()
-	}()
-	go dnsrun.DNSCheck(dnsctx)
+	// dnsctx, dstop := context.WithCancel(context.Background())
+	// go func() {
+	// 	fmt.Scanln()
+	// 	dstop()
+	// }()
+	// go dnsrun.DNSCheck(dnsctx)
+
 	// DNS Check
 	//dnsrun.DnsCheck()
 	// DB Connection

@@ -2,26 +2,27 @@ package heartbeat
 
 import (
 	"context"
-	"fmt"
 	"time"
+
+	"jayantapaul-18/uptime/util/logger"
 )
 
 func Heartbeat(ctx context.Context) {
 	tick := time.Tick(5 * time.Second)
-
+	logger := logger.New() // Create New logger
 	for {
 		select {
 		case <-tick:
 		case <-ctx.Done():
 			return
 		}
-		fmt.Println("heartbeat running ...")
+		logger.Info().Msgf("heartbeat running ...")
 	}
 }
 
 // Need to work
 func Heartbeat2() {
-	fmt.Println("heartbeat...Not Actived yet")
+	// logger.Info().Msgf("heartbeat...Not Actived yet")
 	//tick := time.Tick(20 * time.Second)
 
 	// for {
