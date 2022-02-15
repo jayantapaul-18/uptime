@@ -1,0 +1,196 @@
+{
+  "info": {
+    "_postman_id": "8fdd899c",
+    "name": "GO-uptime",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "http://localhost:3088",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3088",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3088"
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:3088/ping",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3088/ping",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3088",
+          "path": ["ping"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:3088/app/v1/healthz",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3088/app/v1/healthz",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3088",
+          "path": ["app", "v1", "healthz"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:3088/app/v1/healthcheck",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3088/app/v1/healthcheck",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3088",
+          "path": ["app", "v1", "healthcheck"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:3088/app/v1/dnscheck",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3088/app/v1/dnscheck",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3088",
+          "path": ["app", "v1", "dnscheck"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:3088/app/v1/signup",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\"Id\" : \"5\",\n\"Title\" : \"Electronics\",\n\"Content\" : \"Technical\",\n\"Summary\" : \"How to make circuit\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3088/app/v1/signup",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3088",
+          "path": ["app", "v1", "signup"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:3088/app/v1/set-env",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\"envName\" : \"ENV_NAME_GO_TEST\",\n\"envValue\" : \"workingusingGO\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3088/app/v1/set-env",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3088",
+          "path": ["app", "v1", "set-env"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:3088/app/v1/create-profile",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\"name\" : \"Jay\",\n\"city\" : \"Bellevue\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3088/app/v1/create-profile",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3088",
+          "path": ["app", "v1", "create-profile"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "http://localhost:3088/app/v1/login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "username",
+              "value": "Jay",
+              "type": "text"
+            },
+            {
+              "key": "password",
+              "value": "pass12",
+              "type": "text"
+            }
+          ],
+          "options": {
+            "raw": {
+              "language": "text"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:3088/app/v1/login",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3088",
+          "path": ["app", "v1", "login"]
+        }
+      },
+      "response": []
+    }
+  ]
+}
