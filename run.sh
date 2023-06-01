@@ -1,3 +1,3 @@
 #!/bin/bash
 
-go build -o build.go
+go build -o out.go
