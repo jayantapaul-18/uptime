@@ -22,6 +22,13 @@ http://localhost:3088/app/v1/healthz
 
 ```
 
+## pre-commit-hooks
+
+```bash
+pre-commit install
+git commit
+```
+
 **Golang commands**
 
 ```bash
